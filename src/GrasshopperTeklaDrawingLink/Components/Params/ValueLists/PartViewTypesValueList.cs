@@ -32,6 +32,8 @@ namespace GTDrawingLink.Components.Params.ValueLists
             ListItems.Add(new GH_ValueListItem("Back", "\"BackView\""));
             ListItems.Add(new GH_ValueListItem("Bottom", "\"BottomView\""));
             ListItems.Add(new GH_ValueListItem("3d", "\"_3DView\""));
+            ListItems.Add(new GH_ValueListItem("Section", "\"SectionView\""));
+            ListItems.Add(new GH_ValueListItem("End", "\"EndView\""));
 
             SelectItem(0);
         }
