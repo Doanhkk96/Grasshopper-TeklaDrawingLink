@@ -159,7 +159,7 @@ namespace GTDrawingLink.Extensions
 
         public static Tekla.Structures.Geometry3d.Arc ToTekla(this Rhino.Geometry.Arc arc)
         {
-            return new Tekla.Structures.Geometry3d.Arc(arc.StartPoint.ToTekla(), arc.MidPoint.ToTekla(), arc.EndPoint.ToTekla());
+            return new Tekla.Structures.Geometry3d.Arc(arc.StartPoint.ToTekla(), arc.EndPoint.ToTekla(), arc.MidPoint.ToTekla());
         }
 
         public static Rhino.Geometry.BoundingBox ToRhino(this Tekla.Structures.Geometry3d.AABB aabb)

@@ -4,10 +4,12 @@ using Grasshopper.Kernel.Types;
 using GTDrawingLink.Extensions;
 using GTDrawingLink.Tools;
 using GTDrawingLink.Types;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using Tekla.Structures.Drawing;
+using TSG = Tekla.Structures.Geometry3d;
 
 namespace GTDrawingLink.Components.Annotations
 {
@@ -56,12 +58,11 @@ namespace GTDrawingLink.Components.Annotations
                 var view = views.Get(path);
                 var attribute = attributes.Get(i, inputMode);
 
-                var circle = InsertArc(view,
-                                       rhinoArc,
-                                       attribute);
-
-                outputObjects.Add(circle);
-                outputTree.Append(new TeklaDatabaseObjectGoo(circle), path);
+                foreach (var arc in InsertArcs(view, rhinoArc, attribute))
+                {
+                    outputObjects.Add(arc);
+                    outputTree.Append(new TeklaDatabaseObjectGoo(arc), path);
+                }
             }
 
             _command.SetOutputValues(DA, outputTree);
@@ -70,18 +71,61 @@ namespace GTDrawingLink.Components.Annotations
             return outputObjects;
         }
 
-        private static Arc InsertArc(ViewBase view,
-                                     Rhino.Geometry.Arc rhinoArc,
-                                     Arc.ArcAttributes attributes)
+        private static List<Arc> InsertArcs(ViewBase view,
+                                            Rhino.Geometry.Arc rhinoArc,
+                                            Arc.ArcAttributes attributes)
         {
-            var circle = new Arc(view,
-                                 rhinoArc.EndPoint.ToTekla(),
-                                 rhinoArc.StartPoint.ToTekla(),
-                                 rhinoArc.Center.ToTekla(),
-                                 attributes);
-            circle.Insert();
+            // A Tekla drawing arc is stored only as (StartPoint, EndPoint, Radius): it is always
+            // drawn clockwise from start to end (bulging to the left of the start->end vector)
+            // and can span at most 180 degrees. The center passed to the constructor is used only
+            // to derive the radius. Tekla 2026 added the IsLargeArc flag for spans above 180.
+            bool appearsCounterClockwise = rhinoArc.Plane.Normal.Z >= 0;
 
-            return circle;
+            var startPoint = rhinoArc.StartPoint.ToTekla();
+            var endPoint = rhinoArc.EndPoint.ToTekla();
+            var centerPoint = rhinoArc.Center.ToTekla();
+
+            var insertedArcs = new List<Arc>();
+            if (rhinoArc.Angle <= Math.PI)
+            {
+                insertedArcs.Add(InsertSingleArc(view, startPoint, endPoint, centerPoint, appearsCounterClockwise, attributes));
+            }
+            else
+            {
+#if API2026
+                // The point order is inverted compared to arcs below 180 degrees,
+                // because the large arc wraps around the other side of the chord.
+                var arc = appearsCounterClockwise ?
+                    new Arc(view, startPoint, endPoint, centerPoint, attributes) :
+                    new Arc(view, endPoint, startPoint, centerPoint, attributes);
+
+                arc.IsLargeArc = true;
+                arc.Insert();
+                insertedArcs.Add(arc);
+#else
+                // Older versions cannot represent an arc above 180 degrees - split it in half.
+                var midPoint = rhinoArc.MidPoint.ToTekla();
+                insertedArcs.Add(InsertSingleArc(view, startPoint, midPoint, centerPoint, appearsCounterClockwise, attributes));
+                insertedArcs.Add(InsertSingleArc(view, midPoint, endPoint, centerPoint, appearsCounterClockwise, attributes));
+#endif
+            }
+
+            return insertedArcs;
+        }
+
+        private static Arc InsertSingleArc(ViewBase view,
+                                           TSG.Point fromPoint,
+                                           TSG.Point toPoint,
+                                           TSG.Point centerPoint,
+                                           bool appearsCounterClockwise,
+                                           Arc.ArcAttributes attributes)
+        {
+            var arc = appearsCounterClockwise ?
+                new Arc(view, toPoint, fromPoint, centerPoint, attributes) :
+                new Arc(view, fromPoint, toPoint, centerPoint, attributes);
+
+            arc.Insert();
+            return arc;
         }
     }
 
