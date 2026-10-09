@@ -50,12 +50,19 @@ namespace GTDrawingLink.Components.QD_Components
         {
             var (coordinateSystem, modelObjectsTree, paths) = _command.GetInputValues();
 
+            if (modelObjectsTree.Count == 0 || modelObjectsTree.TrueForAll(branch => branch.Count == 0))
+            {
+                AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, "Input Model Objects tree is empty.");
+                return;
+            }
+
             var xPositionsTree = new GH_Structure<GH_Point>();
             var yPositionsTree = new GH_Structure<GH_Point>();
             var zPositionsTree = new GH_Structure<GH_Point>();
             var skewPositionsTree = new GH_Structure<GH_Point>();
 
             var transform = Transform.PlaneToPlane(coordinateSystem, Plane.WorldXY);
+            var teklaModel = new Tekla.Structures.Model.Model();
 
             for (int i = 0; i < modelObjectsTree.Count; i++)
             {
@@ -75,7 +82,7 @@ namespace GTDrawingLink.Components.QD_Components
                     }
                     else if (goo is TeklaDatabaseObjectGoo drawingObject && drawingObject.Value is ModelObject drawingModelObject)
                     {
-                        boltGroup = new Tekla.Structures.Model.Model().SelectModelObject(drawingModelObject.ModelIdentifier) as TSM.BoltGroup;
+                        boltGroup = teklaModel.SelectModelObject(drawingModelObject.ModelIdentifier) as TSM.BoltGroup;
                     }
 
                     if (boltGroup == null)
@@ -91,41 +98,21 @@ namespace GTDrawingLink.Components.QD_Components
 
                     var boltPositions = GetBoltPositions(boltGroup.BoltPositions);
 
+                    GH_Structure<GH_Point> targetTree;
                     if (Math.Abs(zDir.X) >= 0.99)
-                    {
-                        foreach (var pt in boltPositions)
-                        {
-                            var transformedPt = pt;
-                            transformedPt.Transform(transform);
-                            xPositionsTree.Append(new GH_Point(transformedPt), path);
-                        }
-                    }
+                        targetTree = xPositionsTree;
                     else if (Math.Abs(zDir.Y) >= 0.99)
-                    {
-                        foreach (var pt in boltPositions)
-                        {
-                            var transformedPt = pt;
-                            transformedPt.Transform(transform);
-                            yPositionsTree.Append(new GH_Point(transformedPt), path);
-                        }
-                    }
+                        targetTree = yPositionsTree;
                     else if (Math.Abs(zDir.Z) >= 0.99)
-                    {
-                        foreach (var pt in boltPositions)
-                        {
-                            var transformedPt = pt;
-                            transformedPt.Transform(transform);
-                            zPositionsTree.Append(new GH_Point(transformedPt), path);
-                        }
-                    }
+                        targetTree = zPositionsTree;
                     else
+                        targetTree = skewPositionsTree;
+
+                    foreach (var pt in boltPositions)
                     {
-                        foreach (var pt in boltPositions)
-                        {
-                            var transformedPt = pt;
-                            transformedPt.Transform(transform);
-                            skewPositionsTree.Append(new GH_Point(transformedPt), path);
-                        }
+                        var transformedPt = pt;
+                        transformedPt.Transform(transform);
+                        targetTree.Append(new GH_Point(transformedPt), path);
                     }
                 }
             }
