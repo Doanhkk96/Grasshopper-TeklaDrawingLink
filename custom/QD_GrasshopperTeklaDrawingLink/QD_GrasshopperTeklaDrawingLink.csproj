@@ -47,5 +47,7 @@
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
     <Exec Command="copy /Y &quot;$(TargetDir)$(MSBuildProjectName).dll&quot; &quot;$(TargetDir)$(MSBuildProjectName).gha&quot;" />
+    <Exec Command="if not exist &quot;$(AppData)\Grasshopper\Libraries&quot; mkdir &quot;$(AppData)\Grasshopper\Libraries&quot;" />
+    <Exec Command="copy /Y &quot;$(TargetDir)$(MSBuildProjectName).gha&quot; &quot;$(AppData)\Grasshopper\Libraries\$(MSBuildProjectName).gha&quot;" />
   </Target>
 </Project>
