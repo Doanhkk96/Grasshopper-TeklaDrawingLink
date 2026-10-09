@@ -1,0 +1,28 @@
+<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+  <PropertyGroup>
+    <TargetFramework>net48</TargetFramework>
+    <Title>QD_GrasshopperTeklaDrawingLink</Title>
+    <LangVersion>8.0</LangVersion>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
+    <UseWPF>true</UseWPF>
+    <UseWindowsForms>true</UseWindowsForms>
+    <!-- Do not copy the core project DLL or Tekla DLLs, they are loaded by Grasshopper/LiveLink -->
+    <CopyLocalLockFileAssemblies>false</CopyLocalLockFileAssemblies>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Grasshopper" Version="6.0.18016.23451" IncludeAssets="compile;build" />
+    <PackageReference Include="Tekla.Structures.Drawing" Version="2024.0.*" IncludeAssets="compile;build" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\GrasshopperTeklaDrawingLink\GrasshopperTeklaDrawingLink.csproj">
+      <Private>False</Private>
+    </ProjectReference>
+  </ItemGroup>
+
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Exec Command="copy /Y &quot;$(TargetDir)$(MSBuildProjectName).dll&quot; &quot;$(TargetDir)$(MSBuildProjectName).gha&quot;" />
+  </Target>
+</Project>
