@@ -12,13 +12,13 @@ Thay vì dùng `dotnet build`, ta có thể sử dụng trực tiếp **MSBuild.
 
 **Lệnh build dự án gốc:**
 ```powershell
-& "C:\Program Files\Microsoft Visual Studio\18\Community\MSBuild\Current\Bin\MSBuild.exe" src\GrasshopperTeklaDrawingLink\GrasshopperTeklaDrawingLink.csproj -restore /p:Configuration=2024
+& "C:\Program Files\Microsoft Visual Studio\18\Community\MSBuild\Current\Bin\MSBuild.exe" src\GrasshopperTeklaDrawingLink\GrasshopperTeklaDrawingLink.csproj -restore /p:Configuration=2021
 ```
-*Lưu ý: Lệnh này sẽ biên dịch thành công file `GrasshopperTeklaDrawingLink.2024.dll` vào thư mục `bin\2024\`. Ở bước cuối `PostBuild` sẽ văng thông báo lỗi đỏ (Mã lỗi 1) vì nó cố gắng copy file vào thư mục `C:\Users\grzeg\...` của tác giả gốc. Bạn có thể bỏ qua lỗi đỏ ở cuối này vì file `.dll` đã được tạo ra thành công.*
+*Lưu ý: Lệnh này sẽ biên dịch thành công file `GrasshopperTeklaDrawingLink.2021.dll` vào thư mục `bin\2021\`. Ở bước cuối `PostBuild` sẽ văng thông báo lỗi đỏ (Mã lỗi 1) vì nó cố gắng copy file vào thư mục `C:\Users\grzeg\...` của tác giả gốc. Bạn có thể bỏ qua lỗi đỏ ở cuối này vì file `.dll` đã được tạo ra thành công.*
 
 **Lệnh build dự án Custom:**
 ```powershell
-& "C:\Program Files\Microsoft Visual Studio\18\Community\MSBuild\Current\Bin\MSBuild.exe" custom\QD_GrasshopperTeklaDrawingLink\QD_GrasshopperTeklaDrawingLink.csproj -restore /p:Configuration=2024 /p:BuildProjectReferences=false
+& "C:\Program Files\Microsoft Visual Studio\18\Community\MSBuild\Current\Bin\MSBuild.exe" custom\QD_GrasshopperTeklaDrawingLink\QD_GrasshopperTeklaDrawingLink.csproj -restore /p:Configuration=2021 /p:BuildProjectReferences=false
 ```
 *Lưu ý: Flag `/p:BuildProjectReferences=false` giúp MSBuild không tự động build lại project core (tránh bị dừng do lỗi PostBuild của tác giả), mà chỉ dùng thẳng `.dll` của core đã tạo.*
 
