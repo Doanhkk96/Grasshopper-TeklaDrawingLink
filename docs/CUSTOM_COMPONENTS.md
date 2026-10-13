@@ -86,3 +86,16 @@ Tài liệu này ghi nhận các Grasshopper component được tùy biến và 
   1. `Sorted X` (`X`, List of Curve): Danh sách đường cong sắp xếp tăng dần theo tọa độ X của trung điểm.
   2. `Sorted Y` (`Y`, List of Curve): Danh sách đường cong sắp xếp tăng dần theo tọa độ Y của trung điểm.
 
+---
+
+## 4. Quy chuẩn phân nhánh Git khi phát triển Component mới
+
+Để bảo vệ an toàn cho nhánh chính và lịch sử Git rõ ràng:
+1. **Nhánh gốc tích hợp:** `QDcustom` là nhánh chính thức duy nhất chứa toàn bộ custom code đã hoàn thiện.
+2. **Quy trình khi thêm Component mới:**
+   - Tạo branch mới tách từ `QDcustom`: `git checkout QDcustom && git checkout -b feature/<ten-component>` (hoặc tạo git worktree riêng).
+   - Phát triển component mới, cấu hình Category `QD`, chọn SubCategory theo `QD_PanelHeadings`.
+   - Biên dịch và kiểm thử thực tế trên Grasshopper & Tekla.
+   - Khi hoàn thành và kiểm thử đạt yêu cầu: Merge branch tính năng vào `QDcustom`, xóa branch tính năng tạm.
+3. **Không phát triển trực tiếp trên `main` hoặc `QDcustom`** mà chưa qua nhánh tính năng.
+

@@ -130,6 +130,11 @@ Mục tiêu là giữ fork có thể nhận thay đổi từ `LetsConstructIT/Gr
 - Xác minh remote bằng `git remote -v`; thông thường `origin` là fork của người dùng và `upstream` là repository gốc, nhưng phải kiểm tra URL thực tế, không suy đoán.
 - Nếu chưa có remote `upstream`, hãy đề xuất lệnh dùng URL đã xác minh và chỉ thêm sau khi kiểm tra remote hiện tại để không ghi đè cấu hình của người dùng.
 - Dùng branch/nhánh mặc định thực sự của repository; không mặc định tên branch là `main` nếu metadata local cho thấy khác.
+- **Quy trình phân nhánh phát triển Custom Component**:
+  - Nhánh gốc tích hợp chính thức của dự án cá nhân là `QDcustom`.
+  - Mỗi khi phát triển một component mới, BẮT BUỘC tạo một branch mới xuất phát từ `QDcustom` (ví dụ: `feature/<ten-component>` hoặc dùng git worktree riêng biệt).
+  - Toàn bộ công việc phát triển, kiểm thử, build được thực hiện độc lập trên branch tính năng đó.
+  - Sau khi kiểm thử thực tế hoàn thành và người dùng xác nhận đạt yêu cầu, mới tiến hành merge branch tính năng vào `QDcustom` và dọn dẹp xóa bỏ branch/worktree tạm.
 - Không phát triển trực tiếp trên nhánh đồng bộ upstream nếu có thể tránh. Sau khi khảo sát và bảo toàn cấu hình hiện tại, ưu tiên giữ một nhánh upstream-compatible để nhận bản gốc và các branch `custom/*` hoặc `feature/*` cho thay đổi cá nhân. Không tự động đổi branch hiện có hoặc di chuyển commit.
 - Giữ commit custom tách biệt, nhỏ, có thông điệp dễ hiểu; tránh trộn định dạng code, nâng dependency và tính năng trong cùng một commit.
 - Khi cập nhật: kiểm tra working tree sạch; fetch upstream/tags; so sánh commit và release note; xem các file upstream thay đổi; đối chiếu API, project file, versioning, loader và build output; dự đoán xung đột; sao lưu bằng branch an toàn trước khi merge.
