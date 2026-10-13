@@ -9,7 +9,9 @@
     <UseWindowsForms>true</UseWindowsForms>
     <!-- Do not copy the core project DLL or Tekla DLLs, they are loaded by Grasshopper/LiveLink -->
     <CopyLocalLockFileAssemblies>false</CopyLocalLockFileAssemblies>
+    <Configurations>Debug;Release;2019;2019i;2020;2021;2022;2023;2024;2025;2026</Configurations>
   </PropertyGroup>
+
 
   <ItemGroup>
     <PackageReference Include="Grasshopper" Version="6.0.18016.23451" IncludeAssets="compile;build" />
@@ -46,8 +48,8 @@
   </ItemGroup>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="copy /Y &quot;$(TargetDir)$(MSBuildProjectName).dll&quot; &quot;$(TargetDir)$(MSBuildProjectName).gha&quot;" />
-    <Exec Command="if not exist &quot;$(AppData)\Grasshopper\Libraries&quot; mkdir &quot;$(AppData)\Grasshopper\Libraries&quot;" />
-    <Exec Command="copy /Y &quot;$(TargetDir)$(MSBuildProjectName).gha&quot; &quot;$(AppData)\Grasshopper\Libraries\$(MSBuildProjectName).gha&quot;" />
+    <Exec Command="copy /Y &quot;$(TargetDir)$(MSBuildProjectName).dll&quot; &quot;$(TargetDir)QD_G-TDrawingLink_$(Configuration).dll&quot;" />
+    <Exec Command="if not exist &quot;$(AppData)\Grasshopper\QD_TeklaLink&quot; mkdir &quot;$(AppData)\Grasshopper\QD_TeklaLink&quot;" />
+    <Exec Command="copy /Y &quot;$(TargetDir)QD_G-TDrawingLink_$(Configuration).dll&quot; &quot;$(AppData)\Grasshopper\QD_TeklaLink\QD_G-TDrawingLink_$(Configuration).dll&quot;" />
   </Target>
 </Project>

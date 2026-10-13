@@ -93,6 +93,11 @@ Quy tắc cô lập:
 - Không sửa file sinh tự động nếu đã có nguồn sinh ra nó; sửa nguồn và chạy đúng quy trình sinh.
 - Không thêm package, DLL bên ngoài, framework mới hoặc license mới nếu chưa kiểm tra nhu cầu, tính tương thích và ảnh hưởng đóng gói. Giải thích trước khi đưa dependency mới vào.
 - Mọi cải tiến code gốc phải tách khỏi yêu cầu custom khi có thể, có lý do và có kiểm thử riêng.
+- **Quy chuẩn Category & SubCategory cho Custom Component**: Mọi custom component mới của dự án cá nhân bắt buộc phải được đặt trong **Category: `QD`**. SubCategory phân nhóm theo miền chức năng chuẩn (sử dụng hằng số trong `GTDrawingLink.Tools.QD_PanelHeadings`: `Geometry`, `Model`, `Drawing`, `Dimensions`, `Annotations`, `Tools`...). Không đặt vào Category của upstream (`Tekla`) để người dùng dễ nhận diện trên Grasshopper Canvas và không lẫn lộn với component gốc.
+- **Quy chuẩn Kích thước & Thẩm mỹ SubCategory (Harmonious Ribbon Layout)**:
+  - Mặc định Grasshopper chỉ dành khoảng 28px (1 cột icon) cho các SubCategory có ít component (1-2 cái), khiến tiêu đề panel bị cắt cụt với dấu ba chấm (`Geo...`, `QD_...`) rất mất thẩm mỹ.
+  - Dự án tích hợp cơ chế tự động cân đối kích thước `QD_RibbonStyler` trong `QD_TeklaLink.Loader`. Module này tự động lắng nghe sự kiện Canvas và Ribbon của Grasshopper, đo đạc độ dài chuỗi tên (`panel.Name`), tự động mở rộng `panel.Padding` đối xứng (tối thiểu ~78px, tương đương 3 cột icon, hoặc rộng hơn tùy theo độ dài thực tế của chữ) và căn giữa các icon cùng tiêu đề.
+  - Khi phát triển thêm component mới hoặc thêm subcategory mới trong tương lai: nhà phát triển chỉ cần khai báo đúng Category `"QD"` và SubCategory theo `QD_PanelHeadings`, hệ thống `QD_RibbonStyler` sẽ tự động phát hiện và định dạng lại kích thước panel hài hòa mà không cần can thiệp giao diện thủ công.
 
 ## 5. Tính ổn định của component Grasshopper
 
@@ -138,8 +143,9 @@ Mục tiêu là giữ fork có thể nhận thay đổi từ `LetsConstructIT/Gr
 
 - Dùng đúng solution, configuration, framework, compiler và build commands đã xác minh ở bước khảo sát. Không tự chuyển project cũ sang SDK-style, đổi target framework hoặc cập nhật hàng loạt NuGet để “build cho tiện”.
 - Nếu dự án phát ra nhiều DLL cho các phiên bản Tekla, phải build và kiểm tra đúng cấu hình/phiên bản liên quan đến thay đổi. Không lấy một DLL bất kỳ rồi coi là dùng được cho mọi phiên bản.
-- Giữ đúng tên assembly, output path, metadata và cấu trúc package mà Live Link/installer yêu cầu. Nếu cần thay đổi, trước tiên giải thích cơ chế hiện tại và đánh giá khả năng tương thích/cài song song/rollback.
-- Không tự chép DLL vào thư mục Grasshopper của người dùng, không thay DLL đang dùng và không sửa Tekla installation khi chưa có yêu cầu rõ ràng.
+- **Quy chuẩn đóng gói và phân phối cho Custom Project (Kiến trúc Dynamic Loader)**:
+  - Thư viện component được đóng gói dạng `.dll` theo phiên bản: `QD_G-TDrawingLink_<tekla_version>.dll` (ví dụ: `QD_G-TDrawingLink_2021.dll`, `QD_G-TDrawingLink_2024.dll`) và tự động lưu tại `%APPDATA%\Grasshopper\QD_TeklaLink\`. Không đặt trực tiếp các file `.dll` này vào thư mục `Libraries\` để tránh lỗi trùng lặp (Duplicate GUID).
+  - File `.gha` duy nhất của dự án custom đặt trong `%APPDATA%\Grasshopper\Libraries\` là `QD_TeklaLink.Loader.gha` (Dynamic Loader siêu nhẹ chịu trách nhiệm nhận diện Tekla runtime và nạp động đúng file DLL tương thích qua Reflection).
 - Không đưa file build phát sinh, DLL, symbol hoặc thư mục output vào Git trừ khi repository có chủ ý theo dõi chúng.
 - Nếu không có môi trường Windows/Tekla cần thiết, vẫn có thể chạy các kiểm tra tĩnh phù hợp, nhưng phải ghi rõ runtime integration test chưa thực hiện được.
 

@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+  <PropertyGroup>
+    <TargetFramework>net48</TargetFramework>
+    <Title>QD_TeklaLink.Loader</Title>
+    <LangVersion>8.0</LangVersion>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
+    <UseWindowsForms>true</UseWindowsForms>
+    <CopyLocalLockFileAssemblies>false</CopyLocalLockFileAssemblies>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Grasshopper" Version="6.0.18016.23451" IncludeAssets="compile;build" />
+  </ItemGroup>
+
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Exec Command="copy /Y &quot;$(TargetDir)$(MSBuildProjectName).dll&quot; &quot;$(TargetDir)QD_TeklaLink.Loader.gha&quot;" />
+    <Exec Command="if not exist &quot;$(AppData)\Grasshopper\Libraries&quot; mkdir &quot;$(AppData)\Grasshopper\Libraries&quot;" />
+    <Exec Command="copy /Y &quot;$(TargetDir)QD_TeklaLink.Loader.gha&quot; &quot;$(AppData)\Grasshopper\Libraries\QD_TeklaLink.Loader.gha&quot;" />
+  </Target>
+</Project>

@@ -40,7 +40,7 @@ namespace GTDrawingLink.Components.QD_Components
             Name = "Filter Bolts by Direction",
             NickName = "FilterBolts",
             Description = "Filter Bolts by Direction",
-            Category = "QD Component",
+            Category = "QD",
             SubCategory = "QD_Components"
         })
         {
