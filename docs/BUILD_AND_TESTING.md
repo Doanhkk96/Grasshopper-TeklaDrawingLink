@@ -51,7 +51,7 @@ Sử dụng cờ `/p:BuildProjectReferences=false` để MSBuild dùng trực ti
   - Output build 2021: `custom/QD_GrasshopperTeklaDrawingLink/bin/2021/QD_G-TDrawingLink_2021.dll`
   - Output build 2024: `custom/QD_GrasshopperTeklaDrawingLink/bin/2024/QD_G-TDrawingLink_2024.dll`
   - Vị trí triển khai: `%APPDATA%\Grasshopper\QD_TeklaLink\` (Tự động copy qua Post-Build).
-  - Tình trạng: Biên dịch thành công 0 Error cho cả 2021 và 2024 (`FilterBoltsByDirectionComponent`, `FilterExtremePointsComponent`, `SortCurvesByMidpointComponent`).
+  - Tình trạng: Biên dịch thành công 0 Error cho cả 2021 và 2024 (`FilterBoltsByDirectionComponent`, `FilterExtremePointsComponent`, `SortCurvesByMidpointComponent`, `FitViewScaleComponent`).
 
 ## 4. Kết quả kiểm thử (Runtime Testing)
 - **Kiến trúc Dynamic Loader & Tự động Cân đối Kích thước Subcategory**:
@@ -63,6 +63,7 @@ Sử dụng cờ `/p:BuildProjectReferences=false` để MSBuild dùng trực ti
   - `FilterBoltsByDirectionComponent`: Hoạt động thành công trên môi trường thực tế với Tekla Structures.
   - `FilterExtremePointsComponent`: Đã hoàn thiện mã nguồn và kiểm chứng biên dịch thành công qua MSBuild; sẵn sàng hoạt động trên Grasshopper Canvas (Category: `QD`, SubCategory: `Geometry`).
   - `SortCurvesByMidpointComponent`: Khôi phục thành công từ nhánh `sort_curves_by_midpoint`, giữ nguyên GUID gốc và hoạt động trên Grasshopper Canvas (Category: `QD`, SubCategory: `Geometry`).
+  - `FitViewScaleComponent`: Đã hoàn thiện và kiểm thử thực tế thành công trên môi trường Tekla Structures & Grasshopper (Category: `QD`, SubCategory: `Drawing`). Tự động điều chỉnh Scale theo bước chia hết cho 5 để tối ưu hóa kích thước View frame geometry.
 
 ## 5. Các vấn đề còn lưu ý
 - **Triển khai tự động (Deployment)**: Các Post-build event của dự án custom đã tự động đồng bộ file vào đúng các thư mục `%APPDATA%\Grasshopper\Libraries\` và `%APPDATA%\Grasshopper\QD_TeklaLink\`. Người dùng chỉ cần build là môi trường Grasshopper đã sẵn sàng.
