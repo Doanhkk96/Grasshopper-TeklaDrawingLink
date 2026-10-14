@@ -88,6 +88,27 @@ Tài liệu này ghi nhận các Grasshopper component được tùy biến và 
 
 ---
 
+### D. `FitViewScaleComponent`
+- **Tên hiển thị Canvas:** `Fit View Scale` (NickName: `FitViewScale`)
+- **Category / SubCategory:** `QD` / `Drawing` (Sử dụng `QD_PanelHeadings.Drawing`)
+- **Class / File:** `FitViewScaleComponent.cs` (Kế thừa `TeklaComponentBaseNew<FitViewScaleCommand>`)
+- **ComponentGuid:** `93cc47b0-3a3b-43de-ab91-4ba697b3b87a`
+- **Mục đích:** Tự động điều chỉnh tỉ lệ (Scale) của Tekla Drawing View theo bước chia hết cho 5 để thu nhỏ View frame geometry vừa vặn với kích thước chiều rộng và chiều cao tối đa do người dùng nhập, đảm bảo View có kích thước lớn nhất có thể.
+- **Inputs:**
+  1. `View` (`V`, Item): Đối tượng Drawing View trong Tekla Structures.
+  2. `Max Width` (`MaxW`, double, Item): Chiều rộng tối đa cho phép của khung view frame geometry (mm).
+  3. `Max Height` (`MaxH`, double, Item): Chiều cao tối đa cho phép của khung view frame geometry (mm).
+  4. `Step` (`S`, int, Item, mặc định: `5`): Bước nhảy tỉ lệ (mặc định 5, chia hết cho 5).
+  5. `Apply` (`App`, bool, Item, mặc định: `true`): Áp dụng trực tiếp vào bản vẽ Tekla hay chạy thử (dry-run/preview).
+- **Outputs:**
+  1. `View` (`V`, Item): Đối tượng Tekla View sau khi đã cập nhật tỉ lệ.
+  2. `Scale` (`S`, double, Item): Tỉ lệ mới tìm được (mẫu số tỉ lệ, ví dụ: 20 là 1:20).
+  3. `Width` (`W`, double, Item): Chiều rộng thực tế của view frame geometry sau khi fit (mm).
+  4. `Height` (`H`, double, Item): Chiều cao thực tế của view frame geometry sau khi fit (mm).
+  5. `Fits` (`F`, bool, Item): Trạng thái `true` nếu view nằm gọn trong kích thước yêu cầu, `false` nếu vượt ngưỡng an toàn.
+
+---
+
 ## 4. Quy chuẩn phân nhánh Git khi phát triển Component mới
 
 Để bảo vệ an toàn cho nhánh chính và lịch sử Git rõ ràng:
