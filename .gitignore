@@ -350,3 +350,6 @@ MigrationBackup/
 .ionide/
 /src/DrawingLink.UI/Installer/BuildDrop/
 /src/DrawingLink.UI/Installer/output/
+
+# CodeGraph index cache
+.codegraph/
